@@ -1,0 +1,29 @@
+services:
+  emqx:
+    image: emqx/emqx:6.1.1
+    restart: unless-stopped
+    hostname: mqtt.areyoumeshingwith.us
+    group_add:
+      - "110"
+    ports:
+      - "1883:1883"     # MQTT
+      - "8883:8883"     # MQTT-TLS
+      - "8083:8083"     # WebSocket
+      - "8084:8084"     # WebSocket-TLS
+      - "127.0.0.1:18083:18083"   # dashboard: SSH tunnel to access
+    env_file:
+      - .env
+    volumes:
+      - $PWD/data:/opt/emqx/data
+      - $PWD/logs:/opt/emqx/log
+      - /var/lib/acme/live/mqtt.areyoumeshingwith.us/fullchain:/opt/emqx/etc/certs/cert.pem
+      - /var/lib/acme/live/mqtt.areyoumeshingwith.us/privkey:/opt/emqx/etc/certs/key.pem
+    healthcheck:
+      test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
+      interval: 5s
+      timeout: 25s
+      retries: 5
+
+volumes:
+  emqx-data:
+  emqx-log:
