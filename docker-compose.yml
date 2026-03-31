@@ -2,6 +2,7 @@ services:
   emqx:
     image: emqx/emqx:6.1.1
     restart: unless-stopped
+    hostname: mqtt.areyoumeshingwith.us
     group_add:
       - "110"           # add ssl-certs secondary group for Let's Encrypt keys
     ports:
