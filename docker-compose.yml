@@ -24,6 +24,15 @@ services:
       timeout: 25s
       retries: 5
 
+  floodgate:
+    image: ghcr.io/eric-becker/floodgate:latest
+    restart: unless-stopped
+    volumes:
+      - ./floodgate-config.yaml:/app/config.yaml:ro
+    depends_on:
+      emqx:
+        condition: service_healthy
+
 volumes:
   emqx-data:
   emqx-log:

@@ -1,0 +1,14 @@
+channel_policy: "blacklist"
+channel_blacklist:
+  - "LongTurbo"
+  - "LongFast"
+  - "LongModerate"
+  - "MediumFast"
+  - "MediumSlow"
+  - "ShortFast"
+  - "ShortSlow"
+  - "ShortTurbo"
+grpc_port: 9000
+topic_filter: "msh/#"
+stats_interval_s: 60
+log_level: "INFO"
