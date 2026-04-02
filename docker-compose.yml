@@ -25,6 +25,43 @@ services:
       timeout: 25s
       retries: 5
 
+  emqx-migrate:
+    profiles: ["migrate"]
+    image: alpine:3.22
+    restart: "no"
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        copy_if_needed() {
+          src="$$1"
+          dest="$$2"
+          label="$$3"
+
+          if [ ! -d "$$src" ]; then
+            echo "Skipping $$label: source directory $$src does not exist"
+            return 0
+          fi
+
+          if [ -n "$$(ls -A "$$dest" 2>/dev/null)" ]; then
+            echo "Skipping $$label: destination $$dest is not empty"
+            return 0
+          fi
+
+          echo "Copying $$label from $$src to $$dest"
+          cp -a "$$src"/. "$$dest"/
+        }
+
+        copy_if_needed /legacy/data /opt/emqx/data data
+        copy_if_needed /legacy/log /opt/emqx/log log
+
+        echo "Migration complete"
+    volumes:
+      - emqx-data:/opt/emqx/data
+      - emqx-logs:/opt/emqx/log
+      - ${LEGACY_DATA_DIR:-./data}:/legacy/data:ro
+      - ${LEGACY_LOG_DIR:-./logs}:/legacy/log:ro
+
   floodgate:
     image: ghcr.io/eric-becker/floodgate:0.2.0
     restart: unless-stopped
@@ -39,3 +76,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 15s
+
+volumes:
+  emqx-data:
+  emqx-logs:
