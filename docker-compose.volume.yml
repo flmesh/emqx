@@ -4,5 +4,5 @@ services:
       - emqx-data:/opt/emqx/data
       - emqx-logs:/opt/emqx/log
       - ./emqx.conf:/opt/emqx/etc/emqx.conf
-      - /var/lib/acme/live/${EMQX_HOST}/fullchain:/opt/emqx/etc/certs/cert.pem
-      - /var/lib/acme/live/${EMQX_HOST}/privkey:/opt/emqx/etc/certs/key.pem
+      - ${CERT_PEM_PATH}:/opt/emqx/etc/certs/cert.pem
+      - ${KEY_PEM_PATH}:/opt/emqx/etc/certs/key.pem

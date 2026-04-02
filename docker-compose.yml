@@ -2,7 +2,6 @@ services:
   emqx:
     image: emqx/emqx:6.1.1
     restart: unless-stopped
-    hostname: mqtt.areyoumeshingwith.us
     group_add:
       - "110"           # add ssl-certs secondary group for Let's Encrypt keys
     ports:
@@ -17,13 +16,17 @@ services:
       - ./data:/opt/emqx/data
       - ./logs:/opt/emqx/log
       - ./emqx.conf:/opt/emqx/etc/emqx.conf
-      - /var/lib/acme/live/${EMQX_HOST}/fullchain:/opt/emqx/etc/certs/cert.pem
-      - /var/lib/acme/live/${EMQX_HOST}/privkey:/opt/emqx/etc/certs/key.pem
+      - ${CERT_PEM_PATH}:/opt/emqx/etc/certs/cert.pem
+      - ${KEY_PEM_PATH}:/opt/emqx/etc/certs/key.pem
     healthcheck:
       test: ["CMD", "/opt/emqx/bin/emqx", "ctl", "status"]
       interval: 5s
       timeout: 25s
       retries: 5
+    networks:
+      emqx-bridge:
+        aliases:
+          - ${EMQX_HOST:-emqx}
 
   emqx-migrate:
     profiles: ["migrate"]
@@ -76,7 +79,12 @@ services:
       timeout: 5s
       retries: 3
       start_period: 15s
+    networks:
+      emqx-bridge:
 
 volumes:
   emqx-data:
   emqx-logs:
+
+networks:
+  emqx-bridge:
