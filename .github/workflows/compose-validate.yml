@@ -35,6 +35,11 @@ jobs:
             -addext "keyUsage=digitalSignature,keyEncipherment" \
             -addext "extendedKeyUsage=serverAuth"
 
+          emqx_uid="$(docker run --rm --entrypoint sh emqx/emqx:6.1.1 -c 'id -u')"
+          emqx_gid="$(docker run --rm --entrypoint sh emqx/emqx:6.1.1 -c 'id -g')"
+
+          sudo chown "${emqx_uid}:${emqx_gid}" cert.pem key.pem
+          chmod 0644 cert.pem
           chmod 0600 key.pem
 
       - name: Render compose config
