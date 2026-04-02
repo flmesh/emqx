@@ -13,8 +13,8 @@ services:
     env_file:
       - .env
     volumes:
-      - ./data:/opt/emqx/data
-      - ./logs:/opt/emqx/log
+      - emqx-data:/opt/emqx/data
+      - emqx-logs:/opt/emqx/log
       - ./emqx.conf:/opt/emqx/etc/emqx.conf
       - ${CERT_PEM_PATH}:/opt/emqx/etc/certs/cert.pem
       - ${KEY_PEM_PATH}:/opt/emqx/etc/certs/key.pem
@@ -27,43 +27,6 @@ services:
       emqx-bridge:
         aliases:
           - ${EMQX_HOST:-emqx}
-
-  emqx-migrate:
-    profiles: ["migrate"]
-    image: alpine:3.22
-    restart: "no"
-    command:
-      - /bin/sh
-      - -ec
-      - |
-        copy_if_needed() {
-          src="$$1"
-          dest="$$2"
-          label="$$3"
-
-          if [ ! -d "$$src" ]; then
-            echo "Skipping $$label: source directory $$src does not exist"
-            return 0
-          fi
-
-          if [ -n "$$(ls -A "$$dest" 2>/dev/null)" ]; then
-            echo "Skipping $$label: destination $$dest is not empty"
-            return 0
-          fi
-
-          echo "Copying $$label from $$src to $$dest"
-          cp -a "$$src"/. "$$dest"/
-        }
-
-        copy_if_needed /legacy/data /opt/emqx/data data
-        copy_if_needed /legacy/log /opt/emqx/log log
-
-        echo "Migration complete"
-    volumes:
-      - emqx-data:/opt/emqx/data
-      - emqx-logs:/opt/emqx/log
-      - ${LEGACY_DATA_DIR:-./data}:/legacy/data:ro
-      - ${LEGACY_LOG_DIR:-./logs}:/legacy/log:ro
 
   floodgate:
     image: ghcr.io/eric-becker/floodgate:0.2.0
