@@ -29,7 +29,7 @@ services:
           - ${EMQX_HOST:-emqx}
 
   floodgate:
-    image: ghcr.io/eric-becker/floodgate:0.2.0
+    image: ghcr.io/eric-becker/floodgate:0.2.1
     restart: unless-stopped
     volumes:
       - ./floodgate-config.yaml:/app/config.yaml:ro
