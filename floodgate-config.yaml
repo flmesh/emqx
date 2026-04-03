@@ -8,8 +8,10 @@ channel_blacklist:
   - "ShortFast"
   - "ShortSlow"
   - "ShortTurbo"
+  - "telemetry"
 grpc_port: 9000
 health_port: 8080
 topic_filter: "msh/#"
 stats_interval_s: 60
-log_level: "DEBUG"
+log_level: "INFO"
+log_format: "json"
