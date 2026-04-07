@@ -1,0 +1,150 @@
+name: Discord PR Notifications
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  notify-discord:
+    name: Notify Discord
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build payload and send to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REPOSITORY_URL: ${{ github.server_url }}/${{ github.repository }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          PR_ACTION: ${{ github.event.action }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_COMMITS: ${{ github.event.pull_request.commits }}
+          PR_ADDITIONS: ${{ github.event.pull_request.additions }}
+          PR_DELETIONS: ${{ github.event.pull_request.deletions }}
+          PR_CHANGED_FILES: ${{ github.event.pull_request.changed_files }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${DISCORD_WEBHOOK:-}" ]; then
+            echo "DISCORD_WEBHOOK secret is not set"
+            exit 1
+          fi
+
+          ACTION_TEXT=""
+          EMBED_COLOR=3447003
+
+          case "$PR_ACTION" in
+            opened)
+              if [ "$PR_DRAFT" = "true" ]; then
+                ACTION_TEXT="Draft pull request opened"
+                EMBED_COLOR=16098851
+              else
+                ACTION_TEXT="Pull request opened"
+                EMBED_COLOR=5763719
+              fi
+              ;;
+            reopened)
+              ACTION_TEXT="Pull request reopened"
+              EMBED_COLOR=15844367
+              ;;
+            synchronize)
+              ACTION_TEXT="Pull request updated with new commits"
+              EMBED_COLOR=10181046
+              ;;
+            closed)
+              if [ "$PR_MERGED" = "true" ]; then
+                ACTION_TEXT="Pull request merged"
+                EMBED_COLOR=3066993
+              else
+                ACTION_TEXT="Pull request closed without merge"
+                EMBED_COLOR=15158332
+              fi
+              ;;
+            *)
+              ACTION_TEXT="Pull request activity"
+              EMBED_COLOR=9807270
+              ;;
+          esac
+
+          export ACTION_TEXT
+          export EMBED_COLOR
+
+          python3 <<'PY' >/tmp/discord_payload.json
+          import json
+          import os
+
+          def truncate(text, limit):
+              if not text:
+                  return ""
+              text = text.strip()
+              return text if len(text) <= limit else text[: limit - 1] + "…"
+
+          action_text = os.environ["ACTION_TEXT"]
+          repo = os.environ["GITHUB_REPOSITORY"]
+          repo_url = os.environ["GITHUB_REPOSITORY_URL"]
+          pr_number = os.environ["PR_NUMBER"]
+          pr_title = os.environ["PR_TITLE"]
+          pr_url = os.environ["PR_URL"]
+          pr_author = os.environ["PR_AUTHOR"]
+          pr_body = os.environ.get("PR_BODY", "")
+          pr_base = os.environ["PR_BASE_REF"]
+          pr_head = os.environ["PR_HEAD_REF"]
+          pr_head_sha = os.environ["PR_HEAD_SHA"]
+          pr_commits = os.environ["PR_COMMITS"]
+          pr_additions = os.environ["PR_ADDITIONS"]
+          pr_deletions = os.environ["PR_DELETIONS"]
+          pr_changed_files = os.environ["PR_CHANGED_FILES"]
+          actor = os.environ["GITHUB_ACTOR"]
+          color = int(os.environ["EMBED_COLOR"])
+
+          description = truncate(pr_body, 1000) or "No description provided."
+
+          payload = {
+              "username": "GitHub PR Notifier",
+              "embeds": [
+                  {
+                      "title": f"{action_text}: #{pr_number} {pr_title}",
+                      "url": pr_url,
+                      "description": description,
+                      "color": color,
+                      "fields": [
+                          {"name": "Repository", "value": f"[{repo}]({repo_url})", "inline": True},
+                          {"name": "Author", "value": pr_author, "inline": True},
+                          {"name": "Triggered by", "value": actor, "inline": True},
+                          {"name": "Branch", "value": f"`{pr_head}` → `{pr_base}`", "inline": False},
+                          {"name": "Changes", "value": f"**+{pr_additions}** / **-{pr_deletions}** across **{pr_changed_files}** files", "inline": True},
+                          {"name": "Commits", "value": pr_commits, "inline": True},
+                      ],
+                      "image": {
+                        "url": f"https://opengraph.githubassets.com/{pr_head_sha}/{repo}"
+                      },
+                      "footer": {"text": "GitHub Pull Request Notification"}
+                  }
+              ]
+          }
+
+          print(json.dumps(payload))
+          PY
+
+          curl --fail --show-error --silent \
+            -H "Content-Type: application/json" \
+            -X POST \
+            --data @/tmp/discord_payload.json \
+            "$DISCORD_WEBHOOK"
