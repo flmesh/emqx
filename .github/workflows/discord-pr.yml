@@ -133,7 +133,7 @@ jobs:
                           {"name": "Commits", "value": pr_commits, "inline": True},
                       ],
                       "image": {
-                        "url": f"https://opengraph.githubassets.com/{pr_head_sha}/{repo}"
+                        "url": f"https://opengraph.areyoumeshingwith.us/{pr_head_sha}/{repo}"
                       },
                       "footer": {"text": "GitHub Pull Request Notification"}
                   }
