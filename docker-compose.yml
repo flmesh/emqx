@@ -1,6 +1,6 @@
 services:
   emqx:
-    image: emqx/emqx:6.1.1
+    image: emqx/emqx:6.2.0
     restart: unless-stopped
     group_add:
       - "110"           # add ssl-certs secondary group for Let's Encrypt keys
