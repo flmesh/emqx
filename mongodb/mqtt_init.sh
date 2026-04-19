@@ -66,8 +66,8 @@ function ensureDefaultUsernamePolicy() {
     db.username_policy.updateOne(
       { _id: "default" },
       {
-        $setOnInsert: { created_at: now, created_by: "mqtt_init.sh" },
-        $set: {
+        \$setOnInsert: { created_at: now, created_by: "mqtt_init.sh" },
+        \$set: {
           ...policy,
           updated_at: now,
           updated_by: "mqtt_init.sh"
@@ -93,7 +93,7 @@ function ensureProfile(profileDoc) {
     db.profiles.updateOne(
       { name: profileDoc.name },
       {
-        $set: {
+        \$set: {
           description: profileDoc.description,
           status: profileDoc.status,
           is_default: profileDoc.is_default,
@@ -101,7 +101,7 @@ function ensureProfile(profileDoc) {
           updated_at: profileDoc.updated_at,
           updated_by: profileDoc.updated_by
         },
-        $setOnInsert: {
+        \$setOnInsert: {
           created_at: profileDoc.created_at,
           created_by: profileDoc.created_by
         }
