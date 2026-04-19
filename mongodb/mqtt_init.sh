@@ -162,6 +162,7 @@ function ensureDefaultProfiles() {
 ensureCollection("users")
 ensureCollection("profiles")
 ensureCollection("mqtt_acl")
+ensureCollection("mqtt_audit")
 ensureCollection("requests")
 ensureCollection("username_policy")
 
@@ -177,6 +178,10 @@ db.profiles.createIndex({ status: 1 }, { name: "idx_profiles_status" })
 
 db.mqtt_acl.createIndex({ username: 1 }, { name: "idx_acl_username" })
 db.mqtt_acl.createIndex({ username: 1, permission: 1, action: 1 }, { name: "idx_acl_user_perm_action" })
+
+db.mqtt_audit.createIndex({ command_id: 1, created_at: -1 }, { name: "idx_audit_command_created_at" })
+db.mqtt_audit.createIndex({ "actor.discord_user_id": 1, created_at: -1 }, { name: "idx_audit_actor_created_at" })
+db.mqtt_audit.createIndex({ phase: 1, created_at: -1 }, { name: "idx_audit_phase_created_at" })
 
 db.requests.createIndex({ requested_username: 1 }, { name: "idx_requested_username" })
 db.requests.createIndex({ discord_user_id: 1 }, { name: "idx_requests_discord_user_id" })
