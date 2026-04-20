@@ -124,13 +124,33 @@ function ensureDefaultProfiles() {
     rules: [
       {
         permission: "deny",
-        action: "all",
-        topics: ["msh/US/FL/LWS/#"]
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/LWS/#"
+          }
+        ]
       },
       {
         permission: "allow",
-        action: "all",
-        topics: ["msh/US/FL/#"]
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/#"
+          }
+        ]
       }
     ],
     created_at: now,
@@ -147,8 +167,18 @@ function ensureDefaultProfiles() {
     rules: [
       {
         permission: "allow",
-        action: "all",
-        topics: ["msh/US/FL/LWS/#"]
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/LWS/#"
+          }
+        ]
       }
     ],
     created_at: now,
