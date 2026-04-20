@@ -28,7 +28,7 @@ services:
     volumes:
       - emqx-data:/opt/emqx/data
       - emqx-logs:/opt/emqx/log
-      - ./emqx.conf:/opt/emqx/etc/emqx.conf:ro
+      - ./emqx/emqx.conf:/opt/emqx/etc/emqx.conf:ro
       - ${CERT_PEM_PATH}:/opt/emqx/etc/certs/cert.pem:ro
       - ${KEY_PEM_PATH}:/opt/emqx/etc/certs/key.pem:ro
     healthcheck:
@@ -51,7 +51,7 @@ services:
     image: ghcr.io/eric-becker/floodgate:0.2.1
     restart: unless-stopped
     volumes:
-      - ./floodgate-config.yaml:/app/config.yaml:ro
+      - ./floodgate/config.yaml:/app/config.yaml:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
       interval: 30s
