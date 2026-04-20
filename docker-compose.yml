@@ -3,12 +3,12 @@ services:
     image: emqx/emqx:6.2.0
     restart: unless-stopped
     environment:
-      EMQX_AUTHENTICATION__2__USERNAME: ${MONGO_EMQX_USER}
-      EMQX_AUTHENTICATION__2__PASSWORD: ${MONGO_EMQX_PASS}
-      EMQX_AUTHENTICATION__2__COLLECTION: users
-      EMQX_AUTHENTICATION__2__DATABASE: mqtt
-      EMQX_AUTHENTICATION__2__AUTH_SOURCE: mqtt
-      EMQX_AUTHENTICATION__2__ENABLE: false
+      EMQX_AUTHENTICATION__1__USERNAME: ${MONGO_EMQX_USER}
+      EMQX_AUTHENTICATION__1__PASSWORD: ${MONGO_EMQX_PASS}
+      EMQX_AUTHENTICATION__1__COLLECTION: users
+      EMQX_AUTHENTICATION__1__DATABASE: mqtt
+      EMQX_AUTHENTICATION__1__AUTH_SOURCE: mqtt
+      EMQX_AUTHENTICATION__1__ENABLE: false
       EMQX_AUTHORIZATION__SOURCES__1__USERNAME: ${MONGO_EMQX_USER}
       EMQX_AUTHORIZATION__SOURCES__1__PASSWORD: ${MONGO_EMQX_PASS}
       EMQX_AUTHORIZATION__SOURCES__1__COLLECTION: mqtt_acl
@@ -28,7 +28,7 @@ services:
     volumes:
       - emqx-data:/opt/emqx/data
       - emqx-logs:/opt/emqx/log
-      - ./emqx.conf:/opt/emqx/etc/emqx.conf:ro
+      - ./emqx/emqx.conf:/opt/emqx/etc/emqx.conf:ro
       - ${CERT_PEM_PATH}:/opt/emqx/etc/certs/cert.pem:ro
       - ${KEY_PEM_PATH}:/opt/emqx/etc/certs/key.pem:ro
     healthcheck:
@@ -51,7 +51,7 @@ services:
     image: ghcr.io/eric-becker/floodgate:0.2.1
     restart: unless-stopped
     volumes:
-      - ./floodgate-config.yaml:/app/config.yaml:ro
+      - ./floodgate/config.yaml:/app/config.yaml:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
       interval: 30s
