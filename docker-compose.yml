@@ -29,6 +29,7 @@ services:
       - emqx-data:/opt/emqx/data
       - emqx-logs:/opt/emqx/log
       - ./emqx/emqx.conf:/opt/emqx/etc/emqx.conf:ro
+      - ./emqx/acl.conf:/opt/emqx/etc/acl.conf
       - ${CERT_PEM_PATH}:/opt/emqx/etc/certs/cert.pem:ro
       - ${KEY_PEM_PATH}:/opt/emqx/etc/certs/key.pem:ro
     healthcheck:
