@@ -1,3 +1,96 @@
+queue_rules:
+  - name: default
+    batch_size: 1
+    batch_max_wait_time: 1 m
+
+pull_request_rules:
+  - name: Label Renovate PRs
+    conditions:
+      - author=renovate[bot]
+    actions:
+      label:
+        add:
+          - dependencies
+          - automated
+
+  - name: Label Dependabot PRs
+    conditions:
+      - author=dependabot[bot]
+    actions:
+      label:
+        add:
+          - dependencies
+          - automated
+
+  - name: Label Other Bot PRs
+    conditions:
+      - author~=\[bot\]$
+      - -author=renovate[bot]
+      - -author=dependabot[bot]
+    actions:
+      label:
+        add:
+          - automated
+
+  - name: Label Docs PRs
+    conditions:
+      - files~=\.md$
+    actions:
+      label:
+        add:
+          - area/docs
+
+  - name: Label Docker PRs
+    conditions:
+      - files~=^(Dockerfile|docker-compose\.yml)$
+    actions:
+      label:
+        add:
+          - area/docker
+          - needs/manual-test
+
+  - name: Label EMQX PRs
+    conditions:
+      - files~=^(emqx/.*|floodgate/.*|mongodb/.*|register-exhook\.sh)$
+    actions:
+      label:
+        add:
+          - area/emqx
+
+  - name: Label High Risk PRs
+    conditions:
+      - files~=^(\.github/workflows/.*|emqx/acl\.conf|mongodb/.*)$
+    actions:
+      label:
+        add:
+          - risk/high
+          - needs/manual-test
+
+  - name: Label CI PRs
+    conditions:
+      - files~=^\.github/workflows/.*
+    actions:
+      label:
+        add:
+          - area/ci
+
+  - name: Label Dependency Manifest PRs
+    conditions:
+      - files~=^(package\.json|package-lock\.json)$
+    actions:
+      label:
+        add:
+          - area/deps
+
+  - name: Auto-queue ready PRs on main
+    conditions:
+      - base=main
+      - -draft
+      - "#approved-reviews-by>=1"
+    actions:
+      queue:
+        name: default
+
 merge_protections:
   - name: Do not merge outdated PRs
     description: Make sure PRs are almost up to date before merging

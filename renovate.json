@@ -4,6 +4,14 @@
     "config:recommended",
     ":semanticCommits"
   ],
-  "semanticCommitType": "chore",
-  "semanticCommitScope": "deps"
+  "semanticCommitType": "fix",
+  "semanticCommitScope": "deps",
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "semanticCommitType": "feat"
+    }
+  ]
 }
