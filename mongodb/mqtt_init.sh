@@ -116,6 +116,8 @@ function ensureProfile(profileDoc) {
 function ensureDefaultProfiles() {
   const now = new Date()
 
+  // {deny, {username, "\${username}"}, all, ["msh/US/FL/LWS/#"]}.
+  // {allow, {username, "\${username}"}, all, ["msh/US/FL/#"]}.
   ensureProfile({
     name: "default",
     description: "Default Florida Mesh access. Deny Lone Wolf subtree and allow the broader Florida subtree.",
@@ -159,6 +161,7 @@ function ensureDefaultProfiles() {
     updated_by: "mqtt_init.sh"
   })
 
+  // {allow, {username, "\${username}"}, all, ["msh/US/FL/LWS/#"]}.
   ensureProfile({
     name: "lonewolf",
     description: "Lone Wolf profile with access only to the Lone Wolf subtree.",
@@ -177,6 +180,129 @@ function ensureDefaultProfiles() {
           {
             match: "filter",
             value: "msh/US/FL/LWS/#"
+          }
+        ]
+      }
+    ],
+    created_at: now,
+    created_by: "mqtt_init.sh",
+    updated_at: now,
+    updated_by: "mqtt_init.sh"
+  })
+
+  // {deny, {username, "\${username}"}, all, ["msh/US/FL/LWS/#"]}.
+  // {allow, {username, "\${username}"}, all, ["msh/US/FL/#"]}.
+  // {allow, {username, "\${username}"}, publish, ["\$SYS/broker/connection/\${clientid}/state"]}.
+  ensureProfile({
+    name: "bridge",
+    description: "MQTT Bridge access. Deny Lone Wolf subtree and allow the broader Florida subtree and \$SYS/broker topics.",
+    status: "active",
+    is_default: false,
+    rules: [
+      {
+        permission: "deny",
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/LWS/#"
+          }
+        ]
+      },
+      {
+        permission: "allow",
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/#"
+          }
+        ]
+      },
+      {
+        permission: "allow",
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "publish"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "\$SYS/broker/connection/\${clientid}/state"
+          }
+        ]
+      }
+    ],
+    created_at: now,
+    created_by: "mqtt_init.sh",
+    updated_at: now,
+    updated_by: "mqtt_init.sh"
+  })
+
+  // {deny, {username, "\${username}"}, all, ["msh/US/FL/LWS/#"]}.
+  // {allow, {username, "\${username}"}, all, ["msh/US/FL/#"]}.
+  // {allow, {'and', [{username, "\${username}"}, {clientid, {re, "^(meshpoint-[A-Fa-f0-9]+)$"}}]}, all, ["homeassistant/#"]}.
+  ensureProfile({
+    name: "meshpoint",
+    description: "MQTT Meshpoint access. Deny Lone Wolf subtree and allow the broader Florida subtree and homeassistant topics.",
+    status: "active",
+    is_default: false,
+    rules: [
+      {
+        permission: "deny",
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/LWS/#"
+          }
+        ]
+      },
+      {
+        permission: "allow",
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/#"
+          }
+        ]
+      },
+      {
+        permission: "allow",
+        who: {
+          username: "\${username}",
+          clientid_re: "^(meshpoint-[A-Fa-f0-9]+)$"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "homeassistant/#"
           }
         ]
       }
