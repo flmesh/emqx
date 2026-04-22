@@ -312,6 +312,51 @@ function ensureDefaultProfiles() {
     updated_at: now,
     updated_by: "mqtt_init.sh"
   })
+
+  // {allow, {username, "\${username}"}, subscribe, ["\$SYS/#"]}.
+  // {allow, {username, "\${username}"}, all, ["msh/US/FL/#"]}.
+  ensureProfile({
+    name: "admin",
+    description: "Allow admin users to subscribe to \$SYS topics and publish+subscribe to FL mesh topics.",
+    status: "active",
+    is_default: false,
+    rules: [
+      {
+        permission: "allow",
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "subscribe"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "\$SYS/#"
+          }
+        ]
+      },
+      {
+        permission: "allow",
+        who: {
+          username: "\${username}"
+        },
+        action: {
+          type: "all"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/#"
+          }
+        ]
+      }
+    ],
+    created_at: now,
+    created_by: "mqtt_init.sh",
+    updated_at: now,
+    updated_by: "mqtt_init.sh"
+  })
 }
 
 // Create collections explicitly if they do not already exist
