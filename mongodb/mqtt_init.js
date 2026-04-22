@@ -167,30 +167,14 @@ function ensureDefaultProfiles() {
     ]
   })
 
-  // {deny, {username, "${username}"}, all, ["msh/US/FL/LWS/#"]}.
   // {allow, {username, "${username}"}, all, ["msh/US/FL/#"]}.
   // {allow, {username, "${username}"}, publish, ["$SYS/broker/connection/${clientid}/state"]}.
   ensureProfile({
     name: "bridge",
-    description: "Florida Mesh Bridge profile. Deny Lone Wolf subtree and allow the broader Florida subtree and $SYS/broker/connection/ topics.",
+    description: "Florida Mesh Bridge profile. Allow the broader Florida subtree and $SYS/broker/connection/ topics.",
     status: "active",
     is_default: false,
     rules: [
-      {
-        permission: "deny",
-        who: {
-          username: "${username}"
-        },
-        action: {
-          type: "all"
-        },
-        topics: [
-          {
-            match: "filter",
-            value: "msh/US/FL/LWS/#"
-          }
-        ]
-      },
       {
         permission: "allow",
         who: {
