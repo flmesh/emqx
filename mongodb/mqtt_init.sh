@@ -41,8 +41,6 @@ function ensureUser(username, password, roles) {
 
 function ensureDefaultUsernamePolicy() {
   const now = new Date()
-  const existing = db.username_policy.findOne({ _id: "default" })
-
   const policy = {
     pattern: "^[a-z][a-z0-9_-]{2,23}$",
     min_length: 3,
@@ -62,60 +60,48 @@ function ensureDefaultUsernamePolicy() {
     ]
   }
 
-  if (existing) {
-    db.username_policy.updateOne(
-      { _id: "default" },
-      {
-        \$setOnInsert: { created_at: now, created_by: "mqtt_init.sh" },
-        \$set: {
-          ...policy,
-          updated_at: now,
-          updated_by: "mqtt_init.sh"
-        }
+  db.username_policy.updateOne(
+    { _id: "default" },
+    {
+      \$set: {
+        ...policy,
+        updated_at: now,
+        updated_by: "mqtt_init.sh"
       },
-      { upsert: true }
-    )
-  } else {
-    db.username_policy.insertOne({
-      _id: "default",
-      ...policy,
-      created_at: now,
-      created_by: "mqtt_init.sh",
-      updated_at: now,
-      updated_by: "mqtt_init.sh"
-    })
-  }
+      \$setOnInsert: {
+        _id: "default",
+        created_at: now,
+        created_by: "mqtt_init.sh"
+      }
+    },
+    { upsert: true }
+  )
 }
 
 function ensureProfile(profileDoc) {
-  const existing = db.profiles.findOne({ name: profileDoc.name })
-  if (existing) {
-    db.profiles.updateOne(
-      { name: profileDoc.name },
-      {
-        \$set: {
-          description: profileDoc.description,
-          status: profileDoc.status,
-          is_default: profileDoc.is_default,
-          rules: profileDoc.rules,
-          updated_at: profileDoc.updated_at,
-          updated_by: profileDoc.updated_by
-        },
-        \$setOnInsert: {
-          created_at: profileDoc.created_at,
-          created_by: profileDoc.created_by
-        }
+  const now = new Date()
+  db.profiles.updateOne(
+    { name: profileDoc.name },
+    {
+      \$set: {
+        description: profileDoc.description,
+        status: profileDoc.status,
+        is_default: profileDoc.is_default,
+        rules: profileDoc.rules,
+        updated_at: now,
+        updated_by: "mqtt_init.sh"
       },
-      { upsert: true }
-    )
-  } else {
-    db.profiles.insertOne(profileDoc)
-  }
+      \$setOnInsert: {
+        name: profileDoc.name,
+        created_at: now,
+        created_by: "mqtt_init.sh"
+      }
+    },
+    { upsert: true }
+  )
 }
 
 function ensureDefaultProfiles() {
-  const now = new Date()
-
   // {deny, {username, "\${username}"}, all, ["msh/US/FL/LWS/#"]}.
   // {allow, {username, "\${username}"}, all, ["msh/US/FL/#"]}.
   ensureProfile({
@@ -154,11 +140,7 @@ function ensureDefaultProfiles() {
           }
         ]
       }
-    ],
-    created_at: now,
-    created_by: "mqtt_init.sh",
-    updated_at: now,
-    updated_by: "mqtt_init.sh"
+    ]
   })
 
   // {allow, {username, "\${username}"}, all, ["msh/US/FL/LWS/#"]}.
@@ -183,11 +165,7 @@ function ensureDefaultProfiles() {
           }
         ]
       }
-    ],
-    created_at: now,
-    created_by: "mqtt_init.sh",
-    updated_at: now,
-    updated_by: "mqtt_init.sh"
+    ]
   })
 
   // {deny, {username, "\${username}"}, all, ["msh/US/FL/LWS/#"]}.
@@ -244,11 +222,7 @@ function ensureDefaultProfiles() {
           }
         ]
       }
-    ],
-    created_at: now,
-    created_by: "mqtt_init.sh",
-    updated_at: now,
-    updated_by: "mqtt_init.sh"
+    ]
   })
 
   // {deny, {username, "\${username}"}, all, ["msh/US/FL/LWS/#"]}.
@@ -306,11 +280,7 @@ function ensureDefaultProfiles() {
           }
         ]
       }
-    ],
-    created_at: now,
-    created_by: "mqtt_init.sh",
-    updated_at: now,
-    updated_by: "mqtt_init.sh"
+    ]
   })
 
   // {allow, {username, "\${username}"}, subscribe, ["\$SYS/#"]}.
@@ -351,11 +321,7 @@ function ensureDefaultProfiles() {
           }
         ]
       }
-    ],
-    created_at: now,
-    created_by: "mqtt_init.sh",
-    updated_at: now,
-    updated_by: "mqtt_init.sh"
+    ]
   })
 }
 
