@@ -48,11 +48,14 @@ function ensureDefaultUsernamePolicy() {
       "emqx",
       "hubot",
       "floodgate",
-      "uplink"
+      "uplink",
+      "malla",
+      "meshview",
+      "yeraze"
     ],
     banned_substrings: [
       "bridge",
-      "bridge_"
+      "flmesh"
     ]
   }
 
