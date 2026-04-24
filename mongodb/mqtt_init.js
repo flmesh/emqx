@@ -171,7 +171,7 @@ function ensureDefaultProfiles() {
   // {allow, {username, "${username}"}, publish, ["$SYS/broker/connection/${clientid}/state"]}.
   ensureProfile({
     name: "bridge",
-    description: "Florida Mesh Bridge profile. Allow the broader Florida subtree and $SYS/broker/connection/ topics.",
+    description: "Florida Mesh Bridge profile. Allow PUBLISH to Florida subtree and $SYS/broker/connection/ topics.",
     status: "active",
     is_default: false,
     rules: [
@@ -182,6 +182,47 @@ function ensureDefaultProfiles() {
         },
         action: {
           type: "publish"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "msh/US/FL/#"
+          }
+        ]
+      },
+      {
+        permission: "allow",
+        who: {
+          username: "${username}"
+        },
+        action: {
+          type: "publish"
+        },
+        topics: [
+          {
+            match: "filter",
+            value: "$SYS/broker/connection/${clientid}/state"
+          }
+        ]
+      }
+    ]
+  })
+
+  // {allow, {username, "${username}"}, all, ["msh/US/FL/#"]}.
+  // {allow, {username, "${username}"}, publish, ["$SYS/broker/connection/${clientid}/state"]}.
+  ensureProfile({
+    name: "fullbridge",
+    description: "Florida Mesh Full Bridge profile. Allow PUB/SUB to Florida subtree and $SYS/broker/connection/ topics.",
+    status: "active",
+    is_default: false,
+    rules: [
+      {
+        permission: "allow",
+        who: {
+          username: "${username}"
+        },
+        action: {
+          type: "all"
         },
         topics: [
           {
