@@ -167,7 +167,7 @@ function ensureDefaultProfiles() {
     ]
   })
 
-  // {allow, {username, "${username}"}, all, ["msh/US/FL/#"]}.
+  // {allow, {username, "${username}"}, publish, ["msh/US/FL/#"]}.
   // {allow, {username, "${username}"}, publish, ["$SYS/broker/connection/${clientid}/state"]}.
   ensureProfile({
     name: "bridge",
@@ -181,7 +181,7 @@ function ensureDefaultProfiles() {
           username: "${username}"
         },
         action: {
-          type: "all"
+          type: "publish"
         },
         topics: [
           {
