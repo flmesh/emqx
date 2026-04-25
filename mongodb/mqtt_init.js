@@ -101,8 +101,20 @@ function ensureProfile(profileDoc) {
 }
 
 function ensureDefaultProfiles() {
-  // {deny, {username, "${username}"}, all, ["msh/US/FL/LWS/#"]}.
-  // {allow, {username, "${username}"}, all, ["msh/US/FL/#"]}.
+  /*
+    {
+      deny, 
+      {username, "${username}"}, 
+      all, 
+      ["msh/US/FL/LWS/#"]
+    }.
+    {
+      allow,
+      {username, "${username}"},
+      all,
+      ["msh/US/FL/#"]
+    }.
+  */
   ensureProfile({
     name: "default",
     description: "Default Florida Mesh access. Deny Lone Wolf subtree and allow the broader Florida subtree.",
@@ -142,7 +154,14 @@ function ensureDefaultProfiles() {
     ]
   })
 
-  // {allow, {username, "${username}"}, all, ["msh/US/FL/LWS/#"]}.
+  /*
+    {
+      allow,
+      {username, "${username}"},
+      all, 
+      ["msh/US/FL/LWS/#"]
+    }.
+  */
   ensureProfile({
     name: "lonewolf",
     description: "Lone Wolf System with access only to the Lone Wolf subtree.",
@@ -167,8 +186,19 @@ function ensureDefaultProfiles() {
     ]
   })
 
-  // {allow, {username, "${username}"}, publish, ["msh/US/FL/#"]}.
-  // {allow, {username, "${username}"}, publish, ["$SYS/broker/connection/${clientid}/state"]}.
+  /*
+    {
+      allow,
+      {username, "${username}"},
+      all, ["msh/US/FL/LWS/#"]
+    }.
+    {
+      allow,
+      {username, "${username}"},
+      publish,
+      ["$SYS/broker/connection/${clientid}/state"]
+    }.
+  */
   ensureProfile({
     name: "bridge",
     description: "Florida Mesh Bridge profile. Allow PUBLISH to Florida subtree and $SYS/broker/connection/ topics.",
@@ -208,8 +238,20 @@ function ensureDefaultProfiles() {
     ]
   })
 
-  // {allow, {username, "${username}"}, all, ["msh/US/FL/#"]}.
-  // {allow, {username, "${username}"}, publish, ["$SYS/broker/connection/${clientid}/state"]}.
+  /*
+    {
+      allow,
+      {username, "${username}"},
+      all,
+      ["msh/US/FL/#"]
+    }.
+    {
+      allow,
+      {username, "${username}"},
+      publish,
+      ["$SYS/broker/connection/${clientid}/state"]
+    }.
+  */
   ensureProfile({
     name: "fullbridge",
     description: "Florida Mesh Full Bridge profile. Allow PUB/SUB to Florida subtree and $SYS/broker/connection/ topics.",
@@ -249,9 +291,26 @@ function ensureDefaultProfiles() {
     ]
   })
 
-  // {deny, {username, "${username}"}, all, ["msh/US/FL/LWS/#"]}.
-  // {allow, {username, "${username}"}, all, ["msh/US/FL/#"]}.
-  // {allow, {'and', [{username, "${username}"}, {clientid, {re, "^(meshpoint-[A-Fa-f0-9]+)$"}}]}, all, ["homeassistant/#"]}.
+  /*
+    {
+      deny,
+      {username, "${username}"}, all, ["msh/US/FL/LWS/#"]}.
+    {
+      allow,
+      {username, "${username}"}, all, ["msh/US/FL/#"]}.
+    {
+      allow,
+      {
+        'and',
+        [
+          {username, "${username}"},
+          {clientid, {re, "^(meshpoint-[A-Fa-f0-9]+)$"}}
+        ]
+      },
+      all,
+      ["homeassistant/#"]
+    }.
+  */
   ensureProfile({
     name: "meshpoint",
     description: "Meshpoint access. Deny Lone Wolf subtree and allow the broader Florida subtree and homeassistant topics.",
@@ -307,8 +366,20 @@ function ensureDefaultProfiles() {
     ]
   })
 
-  // {allow, {username, "${username}"}, subscribe, ["$SYS/#"]}.
-  // {allow, {username, "${username}"}, all, ["msh/US/FL/#"]}.
+  /*
+    {
+      allow,
+      {username, "${username}"},
+      subscribe,
+      ["$SYS/#"]
+    }.
+    {
+      allow,
+      {username, "${username}"},
+      all,
+      ["msh/US/FL/#"]
+    }.
+  */
   ensureProfile({
     name: "admin",
     description: "Florida Mesh Admin access. Allow the broader Florida subtree and subscribe to $SYS topics.",
