@@ -3,18 +3,16 @@ services:
     image: emqx/emqx:6.2.0
     restart: unless-stopped
     environment:
-      EMQX_AUTHENTICATION__1__USERNAME: ${MONGO_EMQX_USER}
-      EMQX_AUTHENTICATION__1__PASSWORD: ${MONGO_EMQX_PASS}
-      EMQX_AUTHENTICATION__1__COLLECTION: users
-      EMQX_AUTHENTICATION__1__DATABASE: mqtt
-      EMQX_AUTHENTICATION__1__AUTH_SOURCE: mqtt
-      EMQX_AUTHENTICATION__1__ENABLE: false
+      EMQX_AUTHENTICATION__2__USERNAME: ${MONGO_EMQX_USER}
+      EMQX_AUTHENTICATION__2__PASSWORD: ${MONGO_EMQX_PASS}
+      EMQX_AUTHENTICATION__2__COLLECTION: users
+      EMQX_AUTHENTICATION__2__DATABASE: mqtt
+      EMQX_AUTHENTICATION__2__AUTH_SOURCE: mqtt
       EMQX_AUTHORIZATION__SOURCES__1__USERNAME: ${MONGO_EMQX_USER}
       EMQX_AUTHORIZATION__SOURCES__1__PASSWORD: ${MONGO_EMQX_PASS}
       EMQX_AUTHORIZATION__SOURCES__1__COLLECTION: mqtt_acl
       EMQX_AUTHORIZATION__SOURCES__1__DATABASE: mqtt
       EMQX_AUTHORIZATION__SOURCES__1__AUTH_SOURCE: mqtt
-      EMQX_AUTHORIZATION__SOURCES__1__ENABLE: false
     group_add:
       - "110"           # add ssl-certs secondary group for Let's Encrypt keys
     ports:
@@ -42,7 +40,6 @@ services:
         condition: service_healthy
       mongodb:
         condition: service_healthy
-        required: false
     networks:
       emqx-bridge:
         aliases:
@@ -64,13 +61,12 @@ services:
 
   mongodb:
     image: mongo:8.0
-    profiles:
-      - mongodb
     restart: unless-stopped
     env_file:
       - .env
     volumes:
       - mongodb-data:/data/db
+      - ./mongodb/mqtt_init.js:/docker-entrypoint-initdb.d/001_mqtt_init.js:ro
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand({ ping: 1 })"]
       interval: 30s
@@ -80,7 +76,7 @@ services:
     networks:
       emqx-bridge:
     ports:
-      - "127.0.0.1:27017:27017"
+      - "27017:27017"
 
 volumes:
   emqx-data:
