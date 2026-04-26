@@ -54,6 +54,8 @@ Expected variables:
 - `EMQX_DASHBOARD__DEFAULT_PASSWORD`
 - `CERT_PEM_PATH`
 - `KEY_PEM_PATH`
+- `DISCORD_EMQX_ALARM_ACTIONS_ENABLE` (defaults to `false`)
+- `DISCORD_EMQX_ALARM_WEBHOOK_PATH`
 
 TLS certificate and key files are mounted into the EMQX container from the host paths referenced by `CERT_PEM_PATH` and `KEY_PEM_PATH`.
 
