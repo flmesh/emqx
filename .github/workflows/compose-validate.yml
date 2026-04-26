@@ -45,6 +45,8 @@ jobs:
           sudo chmod 0644 cert.pem
           sudo chmod 0600 key.pem
 
+          ./mongodb/set_env.sh | tee -a .env
+
       - name: Render compose config
         run: docker compose config
 
@@ -96,8 +98,9 @@ jobs:
             done
           }
 
-          wait_for_service emqx 120
           wait_for_service floodgate 120
+          wait_for_service mongodb 120
+          wait_for_service emqx 120
 
       - name: Register ExHook
         run: ./register-exhook.sh
