@@ -67,6 +67,8 @@ services:
 
   mongodb:
     image: mongo:8.0
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     restart: unless-stopped
     env_file:
       - .env
