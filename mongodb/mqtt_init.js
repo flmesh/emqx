@@ -176,7 +176,7 @@ function ensureDefaultProfiles() {
       allow,
       {username, "${username}"},
       publish,
-      ["$SYS/broker/connection/${clientid}/state"]
+      ["$SYS/broker/connection/${clientid}/#"]
     }.
   */
   ensureProfile({
@@ -206,12 +206,12 @@ function ensureDefaultProfiles() {
           username: "${username}"
         },
         action: {
-          type: "publish"
+          type: "all"
         },
         topics: [
           {
             match: "filter",
-            value: "$SYS/broker/connection/${clientid}/state"
+            value: "$SYS/broker/connection/${clientid}/#"
           }
         ]
       }
@@ -229,7 +229,7 @@ function ensureDefaultProfiles() {
       allow,
       {username, "${username}"},
       publish,
-      ["$SYS/broker/connection/${clientid}/state"]
+      ["$SYS/broker/connection/${clientid}/#"]
     }.
   */
   ensureProfile({
@@ -259,12 +259,12 @@ function ensureDefaultProfiles() {
           username: "${username}"
         },
         action: {
-          type: "publish"
+          type: "all"
         },
         topics: [
           {
             match: "filter",
-            value: "$SYS/broker/connection/${clientid}/state"
+            value: "$SYS/broker/connection/${clientid}/#"
           }
         ]
       }
