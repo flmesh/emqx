@@ -103,12 +103,6 @@ function ensureProfile(profileDoc) {
 function ensureDefaultProfiles() {
   /*
     {
-      deny, 
-      {username, "${username}"}, 
-      all, 
-      ["msh/US/FL/LWS/#"]
-    }.
-    {
       allow,
       {username, "${username}"},
       all,
@@ -117,25 +111,10 @@ function ensureDefaultProfiles() {
   */
   ensureProfile({
     name: "default",
-    description: "Default Florida Mesh access. Deny Lone Wolf subtree and allow the broader Florida subtree.",
+    description: "Default Florida Mesh access.",
     status: "active",
     is_default: true,
     rules: [
-      {
-        permission: "deny",
-        who: {
-          username: "${username}"
-        },
-        action: {
-          type: "all"
-        },
-        topics: [
-          {
-            match: "filter",
-            value: "msh/US/FL/LWS/#"
-          }
-        ]
-      },
       {
         permission: "allow",
         who: {
@@ -190,18 +169,19 @@ function ensureDefaultProfiles() {
     {
       allow,
       {username, "${username}"},
-      all, ["msh/US/FL/LWS/#"]
+      publish,
+      ["msh/US/FL/#"]
     }.
     {
       allow,
       {username, "${username}"},
       publish,
-      ["$SYS/broker/connection/${clientid}/state"]
+      ["$SYS/broker/connection/${clientid}/#"]
     }.
   */
   ensureProfile({
     name: "bridge",
-    description: "Florida Mesh Bridge profile. Allow PUBLISH to Florida subtree and $SYS/broker/connection/ topics.",
+    description: "Florida Mesh Bridge profile. Allow PUBLISH to Florida subtree and $SYS broker connection topics.",
     status: "active",
     is_default: false,
     rules: [
@@ -226,12 +206,12 @@ function ensureDefaultProfiles() {
           username: "${username}"
         },
         action: {
-          type: "publish"
+          type: "all"
         },
         topics: [
           {
             match: "filter",
-            value: "$SYS/broker/connection/${clientid}/state"
+            value: "$SYS/broker/connection/${clientid}/#"
           }
         ]
       }
@@ -249,12 +229,12 @@ function ensureDefaultProfiles() {
       allow,
       {username, "${username}"},
       publish,
-      ["$SYS/broker/connection/${clientid}/state"]
+      ["$SYS/broker/connection/${clientid}/#"]
     }.
   */
   ensureProfile({
     name: "fullbridge",
-    description: "Florida Mesh Full Bridge profile. Allow PUB/SUB to Florida subtree and $SYS/broker/connection/ topics.",
+    description: "Florida Mesh Full Bridge profile. Allow PUB/SUB to Florida subtree and $SYS broker connection topics.",
     status: "active",
     is_default: false,
     rules: [
@@ -279,12 +259,12 @@ function ensureDefaultProfiles() {
           username: "${username}"
         },
         action: {
-          type: "publish"
+          type: "all"
         },
         topics: [
           {
             match: "filter",
-            value: "$SYS/broker/connection/${clientid}/state"
+            value: "$SYS/broker/connection/${clientid}/#"
           }
         ]
       }
@@ -293,11 +273,11 @@ function ensureDefaultProfiles() {
 
   /*
     {
-      deny,
-      {username, "${username}"}, all, ["msh/US/FL/LWS/#"]}.
-    {
       allow,
-      {username, "${username}"}, all, ["msh/US/FL/#"]}.
+      {username, "${username}"},
+      all,
+      ["msh/US/FL/#"]
+    }.
     {
       allow,
       {
@@ -313,25 +293,10 @@ function ensureDefaultProfiles() {
   */
   ensureProfile({
     name: "meshpoint",
-    description: "Meshpoint access. Deny Lone Wolf subtree and allow the broader Florida subtree and homeassistant topics.",
+    description: "Meshpoint access. Allow the broader Florida subtree and homeassistant topics.",
     status: "active",
     is_default: false,
     rules: [
-      {
-        permission: "deny",
-        who: {
-          username: "${username}"
-        },
-        action: {
-          type: "all"
-        },
-        topics: [
-          {
-            match: "filter",
-            value: "msh/US/FL/LWS/#"
-          }
-        ]
-      },
       {
         permission: "allow",
         who: {
