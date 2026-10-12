@@ -1,5 +1,8 @@
-channel_policy: "blacklist"
-channel_blacklist:
+# floodgate >= 0.3.0 schema: `channel_policy: "blacklist"` + `channel_blacklist`
+# became `zerohop_enabled` + `zerohop_channels`. Same channels as before.
+# From 0.6.0 floodgate rejects unknown keys and invalid values at startup.
+zerohop_enabled: true
+zerohop_channels:
   - "LongTurbo"
   - "LongFast"
   - "LongModerate"
@@ -9,6 +12,7 @@ channel_blacklist:
   - "ShortSlow"
   - "ShortTurbo"
   - "telemetry"
+drop_enabled: false
 grpc_port: 9000
 health_port: 8080
 topic_filter: "msh/#"

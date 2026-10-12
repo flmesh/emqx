@@ -41,7 +41,7 @@ Current behavior includes:
 - gRPC listener on `9000`
 - health endpoint on `8080`
 - topic filter `msh/#`
-- blacklist-based channel policy
+- zero-hop (`hop_limit` and `hop_start` set to 0) on the public channel presets plus `telemetry`
 
 ## Configuration
 
